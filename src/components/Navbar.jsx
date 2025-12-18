@@ -24,9 +24,9 @@ const Navbar = () => {
       <div className="container">
         <div className="navbar-content">
           <Link to="/" className="navbar-logo">
-            <img src="/image.png" alt="Roro Kostum Logo" className="logo-image" />
-            <span className="logo-text">RORO</span>
-            <span className="logo-subtitle">KOSTUM</span>
+            <img src="dist/logo.png" alt="Roro Kostum Logo" className="logo-image" />
+            <span className="logo-text">S</span>
+            <span className="logo-subtitle">Production</span>
           </Link>
 
           <button
