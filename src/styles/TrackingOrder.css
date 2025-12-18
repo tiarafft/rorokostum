@@ -1,0 +1,277 @@
+.tracking-page {
+  min-height: calc(100vh - 80px);
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+.tracking-header {
+  background: linear-gradient(135deg, var(--black) 0%, #2d2d2d 100%);
+  color: white;
+  padding: 4rem 0 3rem;
+  text-align: center;
+}
+
+.tracking-header h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  font-weight: 700;
+}
+
+.tracking-header p {
+  font-size: 1.125rem;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.tracking-content {
+  padding: 3rem 0;
+}
+
+.tracking-search-card {
+  background: white;
+  border-radius: 1rem;
+  padding: 2.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  margin: 0 auto 2rem;
+}
+
+.tracking-search-card h2 {
+  margin: 0 0 1.5rem 0;
+  color: var(--black);
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+.tracking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.tracking-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tracking-form label {
+  font-weight: 600;
+  color: var(--black);
+  font-size: 0.875rem;
+}
+
+.tracking-form input {
+  padding: 1rem;
+  border: 2px solid var(--gray-300);
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: all 0.2s;
+}
+
+.tracking-form input:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(184, 134, 11, 0.1);
+}
+
+.tracking-form button {
+  margin-top: 0.5rem;
+}
+
+.tracking-error {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #fee2e2;
+  color: #991b1b;
+  border-radius: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.875rem;
+}
+
+.tracking-error svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.tracking-result {
+  background: white;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.status-banner {
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.status-icon {
+  font-size: 3rem;
+  line-height: 1;
+}
+
+.status-banner h3 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.5rem;
+}
+
+.status-banner p {
+  margin: 0;
+  font-size: 0.875rem;
+  opacity: 0.9;
+}
+
+.order-details {
+  padding: 2rem;
+}
+
+.detail-section {
+  margin-bottom: 2rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.detail-section:last-child {
+  margin-bottom: 0;
+  padding-bottom: 0;
+  border-bottom: none;
+}
+
+.detail-section h3 {
+  margin: 0 0 1rem 0;
+  color: var(--black);
+  font-size: 1.125rem;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+}
+
+.detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.detail-label {
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  font-weight: 500;
+}
+
+.detail-value {
+  font-size: 1rem;
+  color: var(--black);
+  font-weight: 600;
+}
+
+.detail-value.code {
+  color: var(--gold);
+  font-size: 1.125rem;
+  font-family: 'Courier New', monospace;
+}
+
+.payment-details {
+  background: var(--gray-50);
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+}
+
+.payment-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+}
+
+.payment-row:not(:last-child) {
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.payment-row.penalty {
+  color: #dc2626;
+}
+
+.payment-row.total {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--gold);
+  padding-top: 1rem;
+  border-top: 2px solid var(--gray-300);
+}
+
+.order-notes {
+  background: var(--gray-50);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  margin: 0;
+  line-height: 1.6;
+  color: var(--gray-700);
+}
+
+.tracking-footer {
+  padding: 1.5rem 2rem;
+  background: var(--gray-50);
+  text-align: center;
+  border-top: 1px solid var(--gray-200);
+}
+
+.tracking-footer p {
+  margin: 0;
+  color: var(--gray-600);
+  font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+  .tracking-header {
+    padding: 3rem 0 2rem;
+  }
+
+  .tracking-header h1 {
+    font-size: 2rem;
+  }
+
+  .tracking-header p {
+    font-size: 1rem;
+  }
+
+  .tracking-search-card {
+    padding: 1.5rem;
+    margin: 0 1rem 2rem;
+  }
+
+  .tracking-result {
+    margin: 0 1rem;
+  }
+
+  .status-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 1.5rem;
+  }
+
+  .status-icon {
+    font-size: 2.5rem;
+  }
+
+  .order-details {
+    padding: 1.5rem;
+  }
+
+  .detail-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .payment-details {
+    padding: 1rem;
+  }
+}

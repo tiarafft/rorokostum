@@ -1,0 +1,252 @@
+.detail-kostum {
+  padding: 3rem 0 5rem;
+  min-height: 80vh;
+}
+
+.loading-container,
+.not-found {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  gap: 2rem;
+}
+
+.loading-container div {
+  font-size: 1.5rem;
+  color: var(--gold);
+}
+
+.not-found {
+  text-align: center;
+}
+
+.not-found h2 {
+  color: var(--gray-700);
+  margin-bottom: 1.5rem;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gray-600);
+  font-weight: 500;
+  margin-bottom: 2rem;
+  transition: color 0.3s ease;
+}
+
+.back-link:hover {
+  color: var(--gold-dark);
+}
+
+.back-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+.detail-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.detail-gallery {
+  position: sticky;
+  top: 100px;
+}
+
+.main-image {
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 1rem;
+  overflow: hidden;
+  background: var(--gray-100);
+  box-shadow: var(--shadow-lg);
+  margin-bottom: 1.5rem;
+}
+
+.main-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.thumbnail-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 1rem;
+}
+
+.thumbnail {
+  width: 100%;
+  aspect-ratio: 3/4;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  border: 3px solid transparent;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  background: var(--gray-100);
+  padding: 0;
+}
+
+.thumbnail:hover {
+  border-color: var(--gold-light);
+}
+
+.thumbnail.active {
+  border-color: var(--gold);
+  box-shadow: var(--shadow-gold);
+}
+
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.detail-info {
+  padding: 1rem 0;
+}
+
+.detail-category {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: var(--gold-dark);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 1rem;
+}
+
+.detail-info h1 {
+  font-size: 2.5rem;
+  margin-bottom: 2rem;
+  color: var(--black);
+}
+
+.detail-price {
+  background: linear-gradient(135deg, var(--gold-light) 0%, rgba(244, 228, 193, 0.5) 100%);
+  padding: 1.5rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  border: 2px solid var(--gold);
+}
+
+.price-label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--gray-600);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.price-value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--gold-dark);
+  font-family: var(--font-display);
+}
+
+.price-period {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: var(--gray-600);
+}
+
+.detail-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: var(--gray-50);
+  border-radius: 0.5rem;
+}
+
+.status-label {
+  font-weight: 600;
+  color: var(--gray-700);
+}
+
+.status-available {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.status-rented {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+.detail-sizes,
+.detail-description {
+  margin-bottom: 2rem;
+}
+
+.detail-sizes h3,
+.detail-description h3 {
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  color: var(--black);
+}
+
+.detail-sizes p,
+.detail-description p {
+  color: var(--gray-600);
+  line-height: 1.7;
+  font-size: 1.05rem;
+}
+
+.btn-whatsapp {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  font-size: 1.125rem;
+  padding: 1.125rem 2rem;
+}
+
+.btn-whatsapp svg {
+  width: 24px;
+  height: 24px;
+}
+
+.btn-whatsapp:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@media (max-width: 1024px) {
+  .detail-content {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .detail-gallery {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .detail-kostum {
+    padding: 2rem 0 3rem;
+  }
+
+  .detail-info h1 {
+    font-size: 2rem;
+  }
+
+  .price-value {
+    font-size: 1.75rem;
+  }
+
+  .thumbnail-list {
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 0.75rem;
+  }
+}
