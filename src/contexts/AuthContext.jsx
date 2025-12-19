@@ -13,17 +13,53 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null)
+  const [adminData, setAdminData] = useState(null)
   const [loading, setLoading] = useState(true)
+
+  const fetchAdminData = async (userId) => {
+    if (!userId) {
+      setAdminData(null)
+      return
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('user_id', userId)
+        .eq('is_active', true)
+        .maybeSingle()
+
+      if (error) {
+        console.error('Error fetching admin data:', error)
+        setAdminData(null)
+      } else {
+        setAdminData(data)
+      }
+    } catch (error) {
+      console.error('Error fetching admin data:', error)
+      setAdminData(null)
+    }
+  }
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null)
-      setLoading(false)
+      if (session?.user) {
+        fetchAdminData(session.user.id).then(() => setLoading(false))
+      } else {
+        setLoading(false)
+      }
     })
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       (async () => {
         setUser(session?.user ?? null)
+        if (session?.user) {
+          await fetchAdminData(session.user.id)
+        } else {
+          setAdminData(null)
+        }
       })()
     })
 
@@ -55,10 +91,13 @@ export const AuthProvider = ({ children }) => {
 
   const value = {
     user,
+    adminData,
     signIn,
     signUp,
     signOut,
     loading,
+    isSuperAdmin: adminData?.role === 'super_admin',
+    isAdmin: adminData?.role === 'admin' || adminData?.role === 'super_admin',
   }
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>

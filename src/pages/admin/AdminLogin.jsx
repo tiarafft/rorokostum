@@ -1,47 +1,57 @@
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../../contexts/AuthContext'
+import { supabase } from '../../lib/supabase'
 import '../../styles/AdminLogin.css'
 
 const AdminLogin = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState('')
   const [loading, setLoading] = useState(false)
-  const [isRegister, setIsRegister] = useState(false)
-  const { signIn, signUp, user } = useAuth()
+  const { signIn, signOut, user, adminData } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
-    if (user) {
+    if (user && adminData) {
       navigate('/admin/dashboard')
     }
-  }, [user, navigate])
+  }, [user, adminData, navigate])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
-    setSuccess('')
     setLoading(true)
 
     try {
-      if (isRegister) {
-        await signUp(email, password)
-        setSuccess('Registrasi berhasil! Silakan login.')
-        setIsRegister(false)
-        setEmail('')
-        setPassword('')
-      } else {
-        await signIn(email, password)
-        navigate('/admin/dashboard')
+      const { data: authData, error: signInError } = await signIn(email, password)
+
+      if (signInError) throw signInError
+
+      const { data: adminUser, error: adminError } = await supabase
+        .from('admin_users')
+        .select('*')
+        .eq('user_id', authData.user.id)
+        .maybeSingle()
+
+      if (adminError) throw adminError
+
+      if (!adminUser) {
+        await signOut()
+        setError('Akun Anda tidak terdaftar sebagai admin. Hubungi Super Admin untuk registrasi.')
+        return
       }
+
+      if (!adminUser.is_active) {
+        await signOut()
+        setError('Akun Anda telah dinonaktifkan. Hubungi Super Admin.')
+        return
+      }
+
+      navigate('/admin/dashboard')
     } catch (err) {
-      if (isRegister) {
-        setError(err.message || 'Registrasi gagal')
-      } else {
-        setError('Email atau password salah')
-      }
+      console.error('Login error:', err)
+      setError('Email atau password salah')
     } finally {
       setLoading(false)
     }
@@ -82,23 +92,14 @@ const AdminLogin = () => {
           </div>
 
           {error && <div className="error-message">{error}</div>}
-          {success && <div className="success-message">{success}</div>}
 
           <button type="submit" className="btn-login" disabled={loading}>
-            {loading ? 'Loading...' : (isRegister ? 'Daftar' : 'Login')}
+            {loading ? 'Loading...' : 'Login'}
           </button>
 
-          <button
-            type="button"
-            className="btn-toggle"
-            onClick={() => {
-              setIsRegister(!isRegister)
-              setError('')
-              setSuccess('')
-            }}
-          >
-            {isRegister ? 'Sudah punya akun? Login' : 'Belum punya akun? Daftar'}
-          </button>
+          <div className="login-note">
+            <small>Hanya admin yang terdaftar dapat mengakses sistem. Hubungi Super Admin untuk registrasi.</small>
+          </div>
         </form>
 
         <div className="login-footer">

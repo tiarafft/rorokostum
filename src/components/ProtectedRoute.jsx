@@ -2,7 +2,7 @@ import { Navigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 
 const ProtectedRoute = ({ children }) => {
-  const { user, loading } = useAuth()
+  const { user, adminData, loading } = useAuth()
 
   if (loading) {
     return (
@@ -17,7 +17,7 @@ const ProtectedRoute = ({ children }) => {
     )
   }
 
-  if (!user) {
+  if (!user || !adminData || !adminData.is_active) {
     return <Navigate to="/admin/login" replace />
   }
 

@@ -14,6 +14,7 @@ import AdminKategori from './pages/admin/AdminKategori'
 import AdminKostum from './pages/admin/AdminKostum'
 import AdminOrders from './pages/admin/AdminOrders'
 import AdminSettings from './pages/admin/AdminSettings'
+import AdminUsers from './pages/admin/AdminUsers'
 import ProtectedRoute from './components/ProtectedRoute'
 
 function AppContent() {
@@ -69,6 +70,14 @@ function AppContent() {
           element={
             <ProtectedRoute>
               <AdminSettings />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users"
+          element={
+            <ProtectedRoute>
+              <AdminUsers />
             </ProtectedRoute>
           }
         />
