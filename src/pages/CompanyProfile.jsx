@@ -35,7 +35,15 @@ const CompanyProfile = () => {
         if (item.key === 'company_name') dataMap.name = item.value
         if (item.key === 'company_address') dataMap.address = item.value
         if (item.key === 'company_description') dataMap.description = item.value
-        if (item.key === 'google_maps_embed') dataMap.google_maps_embed = item.value
+        if (item.key === 'google_maps_embed') {
+          // Extract src URL from iframe HTML if needed
+          if (item.value && item.value.includes('<iframe')) {
+            const srcMatch = item.value.match(/src="([^"]+)"/)
+            dataMap.google_maps_embed = srcMatch ? srcMatch[1] : item.value
+          } else {
+            dataMap.google_maps_embed = item.value
+          }
+        }
         if (item.key === 'facebook_url') dataMap.facebook_url = item.value
         if (item.key === 'instagram_url') dataMap.instagram_url = item.value
       })
