@@ -13,10 +13,14 @@ const AdminSettings = () => {
     facebook_url: '',
     instagram_url: '',
     google_maps_embed: '',
-    google_maps_link: ''
+    google_maps_link: '',
+    logo_url: ''
   })
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState({ type: '', text: '' })
+  const [logoFile, setLogoFile] = useState(null)
+  const [logoPreview, setLogoPreview] = useState(null)
+  const [uploadingLogo, setUploadingLogo] = useState(false)
 
   useEffect(() => {
     fetchSettings()
@@ -33,6 +37,127 @@ const AdminSettings = () => {
         settingsMap[item.key] = item.value
       })
       setSettings(settingsMap)
+
+      if (settingsMap.logo_url) {
+        const { data: { publicUrl } } = supabase.storage
+          .from('company-assets')
+          .getPublicUrl(settingsMap.logo_url)
+
+        const timestamp = new Date().getTime()
+        setLogoPreview(`${publicUrl}?t=${timestamp}`)
+      }
+    }
+  }
+
+  const handleLogoSelect = (e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    const validTypes = ['image/png', 'image/jpeg', 'image/jpg', 'image/svg+xml', 'image/webp']
+    if (!validTypes.includes(file.type)) {
+      setMessage({ type: 'error', text: 'Format file tidak valid. Gunakan PNG, JPG, SVG, atau WEBP' })
+      return
+    }
+
+    if (file.size > 2097152) {
+      setMessage({ type: 'error', text: 'Ukuran file terlalu besar. Maksimal 2MB' })
+      return
+    }
+
+    setLogoFile(file)
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      setLogoPreview(reader.result)
+    }
+    reader.readAsDataURL(file)
+    setMessage({ type: '', text: '' })
+  }
+
+  const handleLogoUpload = async () => {
+    if (!logoFile) {
+      setMessage({ type: 'error', text: 'Pilih file logo terlebih dahulu' })
+      return
+    }
+
+    setUploadingLogo(true)
+    setMessage({ type: '', text: '' })
+
+    try {
+      if (settings.logo_url) {
+        await supabase.storage
+          .from('company-assets')
+          .remove([settings.logo_url])
+      }
+
+      const fileExt = logoFile.name.split('.').pop()
+      const fileName = `logo-${Date.now()}.${fileExt}`
+      const filePath = `logos/${fileName}`
+
+      const { error: uploadError } = await supabase.storage
+        .from('company-assets')
+        .upload(filePath, logoFile)
+
+      if (uploadError) throw uploadError
+
+      const { error: updateError } = await supabase
+        .from('settings')
+        .update({ value: filePath, updated_at: new Date().toISOString() })
+        .eq('key', 'logo_url')
+
+      if (updateError) throw updateError
+
+      setSettings({ ...settings, logo_url: filePath })
+      setLogoFile(null)
+      setMessage({ type: 'success', text: 'Logo berhasil diunggah' })
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('company-assets')
+        .getPublicUrl(filePath)
+      const timestamp = new Date().getTime()
+      setLogoPreview(`${publicUrl}?t=${timestamp}`)
+
+      localStorage.setItem('logo_updated', Date.now().toString())
+      window.dispatchEvent(new Event('logo_changed'))
+    } catch (error) {
+      setMessage({ type: 'error', text: error.message })
+    } finally {
+      setUploadingLogo(false)
+    }
+  }
+
+  const handleLogoDelete = async () => {
+    if (!settings.logo_url) return
+
+    if (!confirm('Apakah Anda yakin ingin menghapus logo?')) return
+
+    setUploadingLogo(true)
+    setMessage({ type: '', text: '' })
+
+    try {
+      const { error: deleteError } = await supabase.storage
+        .from('company-assets')
+        .remove([settings.logo_url])
+
+      if (deleteError) throw deleteError
+
+      const { error: updateError } = await supabase
+        .from('settings')
+        .update({ value: '', updated_at: new Date().toISOString() })
+        .eq('key', 'logo_url')
+
+      if (updateError) throw updateError
+
+      setSettings({ ...settings, logo_url: '' })
+      setLogoPreview(null)
+      setLogoFile(null)
+      setMessage({ type: 'success', text: 'Logo berhasil dihapus' })
+
+      localStorage.setItem('logo_updated', Date.now().toString())
+      window.dispatchEvent(new Event('logo_changed'))
+    } catch (error) {
+      setMessage({ type: 'error', text: error.message })
+    } finally {
+      setUploadingLogo(false)
     }
   }
 
@@ -77,6 +202,128 @@ const AdminSettings = () => {
 
         <div className="crud-content" style={{ maxWidth: '800px' }}>
           <form onSubmit={handleSubmit} style={{ padding: '2rem' }}>
+            <div style={{
+              marginBottom: '2rem',
+              paddingBottom: '2rem',
+              borderBottom: '2px solid var(--gray-200)'
+            }}>
+              <h3 style={{ marginBottom: '0.5rem', color: 'var(--black)' }}>Logo Perusahaan</h3>
+              <p style={{ fontSize: '0.875rem', color: 'var(--gray-600)', marginBottom: '1.5rem' }}>
+                Upload, ganti, atau hapus logo perusahaan
+              </p>
+
+              {logoPreview && (
+                <div style={{
+                  marginBottom: '1rem',
+                  padding: '1.5rem',
+                  backgroundColor: 'var(--gray-50)',
+                  borderRadius: '8px',
+                  border: '1px solid var(--gray-200)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '1rem'
+                }}>
+                  <img
+                    src={logoPreview}
+                    alt="Logo Preview"
+                    style={{
+                      maxWidth: '200px',
+                      maxHeight: '200px',
+                      objectFit: 'contain',
+                      backgroundColor: 'white',
+                      padding: '1rem',
+                      borderRadius: '8px',
+                      border: '1px solid var(--gray-200)'
+                    }}
+                  />
+                  <div style={{
+                    fontSize: '0.875rem',
+                    color: 'var(--gray-600)',
+                    textAlign: 'center'
+                  }}>
+                    {logoFile ? 'Logo baru (belum disimpan)' : 'Logo saat ini'}
+                  </div>
+                </div>
+              )}
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center', flexWrap: 'wrap' }}>
+                  <label
+                    htmlFor="logo-upload"
+                    style={{
+                      padding: '0.625rem 1.25rem',
+                      backgroundColor: 'var(--primary)',
+                      color: 'white',
+                      borderRadius: '6px',
+                      cursor: 'pointer',
+                      fontSize: '0.875rem',
+                      fontWeight: '500',
+                      transition: 'background-color 0.2s',
+                      border: 'none'
+                    }}
+                    onMouseOver={(e) => e.target.style.backgroundColor = 'var(--primary-dark)'}
+                    onMouseOut={(e) => e.target.style.backgroundColor = 'var(--primary)'}
+                  >
+                    {settings.logo_url ? 'Ganti Logo' : 'Pilih Logo'}
+                  </label>
+                  <input
+                    id="logo-upload"
+                    type="file"
+                    accept="image/png,image/jpeg,image/jpg,image/svg+xml,image/webp"
+                    onChange={handleLogoSelect}
+                    style={{ display: 'none' }}
+                  />
+
+                  {logoFile && (
+                    <button
+                      type="button"
+                      onClick={handleLogoUpload}
+                      disabled={uploadingLogo}
+                      style={{
+                        padding: '0.625rem 1.25rem',
+                        backgroundColor: 'var(--success)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: uploadingLogo ? 'not-allowed' : 'pointer',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        opacity: uploadingLogo ? 0.6 : 1
+                      }}
+                    >
+                      {uploadingLogo ? 'Mengunggah...' : 'Upload Logo'}
+                    </button>
+                  )}
+
+                  {settings.logo_url && !logoFile && (
+                    <button
+                      type="button"
+                      onClick={handleLogoDelete}
+                      disabled={uploadingLogo}
+                      style={{
+                        padding: '0.625rem 1.25rem',
+                        backgroundColor: 'var(--danger)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '6px',
+                        cursor: uploadingLogo ? 'not-allowed' : 'pointer',
+                        fontSize: '0.875rem',
+                        fontWeight: '500',
+                        opacity: uploadingLogo ? 0.6 : 1
+                      }}
+                    >
+                      {uploadingLogo ? 'Menghapus...' : 'Hapus Logo'}
+                    </button>
+                  )}
+                </div>
+
+                <small style={{ color: 'var(--gray-600)', fontSize: '0.875rem' }}>
+                  Format: PNG, JPG, SVG, WEBP. Maksimal 2MB
+                </small>
+              </div>
+            </div>
+
             <div className="form-group">
               <label htmlFor="whatsapp_number">
                 Nomor WhatsApp

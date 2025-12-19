@@ -15,6 +15,11 @@
   --gray-800: #1F2937;
   --gray-900: #111827;
 
+  --primary: #D4AF37;
+  --primary-dark: #B8941F;
+  --success: #10B981;
+  --danger: #EF4444;
+
   --font-display: 'Playfair Display', serif;
   --font-body: 'Inter', sans-serif;
 
