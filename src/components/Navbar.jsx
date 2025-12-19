@@ -60,8 +60,8 @@ const Navbar = () => {
         <div className="navbar-content">
           <Link to="/" className="navbar-logo">
             <img src={logoUrl} alt="Roro Kostum Logo" className="logo-image" />
-            <span className="logo-text">RORO</span>
-            <span className="logo-subtitle">KOSTUM</span>
+            <span className="logo-text">S</span>
+            <span className="logo-subtitle">Production</span>
           </Link>
 
           <button
